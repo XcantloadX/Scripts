@@ -5,8 +5,8 @@
 有必要的话，会加入整个歌单的下载功能
 
 ## 安装
-在 [Releases](https://github.com/XcantloadX/CloudMusicDownload/releases) 里下载  
-或者如果你安装了 AHK 可以直接保存脚本，运行  
+在 [Releases](https://github.com/XcantloadX/CloudMusicDownload/releases) 里下载编译好的版本  
+或者如果你安装了 AHK 可以直接 Clone 项目  
 
 ## 使用方法
 复制歌曲链接（PC 客户端：分享->复制链接），然后启动程序，选择保存位置即可  
