@@ -28,7 +28,7 @@ Pause 键 -> 音量 +
 配合 Listary 使用  
 
 配置说明：
-![apacheswitch_2.png](images\apacheswitch_2.png)
+![apacheswitch_2.png](./images/apacheswitch_2.png)
 截图：
-![apacheswitch_1.png](images\apacheswitch_1.png)
+![apacheswitch_1.png](./images/apacheswitch_1.png)
 
