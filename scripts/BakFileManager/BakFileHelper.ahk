@@ -80,7 +80,6 @@ RunUsingDefault(filepath)
 Restore(filepath)
 {
 	pos := InStr(filepath, ".", false, 0)
-	MsgBox, %pos%
 	
 	name := SubStr(filepath, 1, pos)
 	FileMove, %filepath%, %name%
