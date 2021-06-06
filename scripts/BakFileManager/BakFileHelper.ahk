@@ -1,27 +1,27 @@
 ﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#Include StdoutToVar_CreateProcess.ahk
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-
 switch A_Args[1]
 {
-	case "-open":
+	case "open":
 		CheckParam()
 		RunUsingDefault(A_Args[2])
 		return
-	case "-restore":
+	case "restore":
 		CheckParam()
 		Restore(A_Args[2])
 		return
-	case "-backup":
+	case "backup":
 		CheckParam()
 		Backup(A_Args[2])
 		return
-	case "-install":
+	case "install":
 		Install()
 		return
-	case "-uninstall":
+	case "uninstall":
 		Uninstall()
 		return
 	default:
@@ -53,14 +53,13 @@ RunUsingDefault(filepath)
 	;获取后缀
 	; XXX.mp3.bak
 	posA := InStr(filepath, ".", false, 0) ;.bak 的 .
-	posB := InStr(filepath, ".", false, 1) ;.mp3 的 .
+	posB := InStr(filepath, ".", false, -4) ;.mp3 的 .（从右向左第 4 个找起）
 	type := SubStr(filepath, posB, StrLen(filepath) - posA + 1)
 	if(posA = 0 or posA = posB)
 	{
 		MsgBox, 16, 错误, 不是 .bak 文件！
 		return
 	}
-	
 	
 	;读取默认程序
 	RegRead, outVar, HKEY_CLASSES_ROOT\%type%
@@ -101,13 +100,13 @@ Install()
 	
 	;.bak 文件的右键菜单
 	RegWrite, REG_SZ, %base%, , Backup File(.bak)
-	RegWrite, REG_SZ, %base%\Shell\Open\Command, , "%A_ScriptFullPath%" -open "`%1"
+	RegWrite, REG_SZ, %base%\Shell\Open\Command, , "%A_ScriptFullPath%" open "`%1"
 	RegWrite, REG_SZ, %base%\Shell\RestoreFile, , 恢复 .bak 文件
-	RegWrite, REG_SZ, %base%\Shell\RestoreFile\Command, , "%A_ScriptFullPath%" -restore "`%1"
+	RegWrite, REG_SZ, %base%\Shell\RestoreFile\Command, , "%A_ScriptFullPath%" restore "`%1"
 	
 	;.* 文件的右键菜单
 	RegWrite, REG_SZ, HKEY_CLASSES_ROOT\*\shell\Backup, , 复制为 .bak 文件
-	RegWrite, REG_SZ, HKEY_CLASSES_ROOT\*\shell\Backup\Command, , "%A_ScriptFullPath%" -backup "`%1"
+	RegWrite, REG_SZ, HKEY_CLASSES_ROOT\*\shell\Backup\Command, , "%A_ScriptFullPath%" backup "`%1"
 	
 	Process, Close, explorer.exe
 	While(ErrorLevel <> 0)
@@ -124,4 +123,13 @@ Uninstall()
 	RegDelete, HKEY_CLASSES_ROOT\*\shell\Backup
 	
 	MsgBox, 64, 提示, 操作完成！
+}
+
+RunWaitOne(command) {
+    ; WshShell 对象: http://msdn.microsoft.com/en-us/library/aew9yb99
+    shell := ComObjCreate("WScript.Shell")
+    ; 通过 cmd.exe 执行单条命令
+    exec := shell.Exec(ComSpec " /C " command)
+    ; 读取并返回命令的输出
+    return exec.StdOut.ReadAll()
 }
